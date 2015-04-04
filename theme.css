@@ -1,0 +1,56 @@
+
+html, body {
+  margin: 0px;
+  height: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size:14px;
+  background-color: #CCC;
+}
+
+#menu {
+  float: left;
+  width: 15%;
+  height: 100%;
+  overflow: auto;
+  background-color: #DDD;
+}
+
+#map {
+  width: 85%;
+  height: 100%;
+}
+
+#layers {
+  margin: 10px 0px;
+  padding: 10px 0px;
+}
+
+#layers ul {
+  margin: 0px 4px;
+  padding: 1px;
+  list-style-type: none;
+  padding-left: 16px;
+}
+
+#layers li {
+  margin: 1px 6px;
+  padding-top: 3px;
+}
+
+#layers label {
+    display: block;
+    padding-left: 0px;
+    text-indent: 0px;
+}
+
+#layers input {
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    margin: 0;
+    vertical-align: bottom;
+    position: relative;
+    top: -2px;
+    margin-right: 4px;
+}
+
