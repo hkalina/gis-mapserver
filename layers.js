@@ -39,19 +39,18 @@ var wmtsTileGrid = new ol.tilegrid.WMTS({
   matrixIds: matrixIds
 });
 
+var view = new ol.View({
+  center: [0,0],
+  //center: [-591909.64, -1189823.30],
+  //center: ol.proj.transform([16.735514831543, 48.941200861905635], 'EPSG:4326', jtskProjection),
+  zoom: 6
+});
+
 var layers = [
   
   {
     group: "ČÚZK (skupina)",
     items: [
-      
-      {
-        name: "Open street map",
-        layer: new ol.layer.Tile({
-          visible: false,
-          source: new ol.source.OSM()
-        })
-      },
       
       {
         name: "ČÚZK: Fotomapa",
@@ -75,21 +74,6 @@ var layers = [
           source: new ol.source.WMTS({
             url: 'http://geoportal-zm.cuzk.cz/WMTS_ZM/WMTService.aspx?',
             layer: 'zm',
-            style: 'default',
-            matrixSet: 'jtsk:epsg:5514',
-            format: 'image/png',
-            tileGrid: wmtsTileGrid
-          })
-        })
-      },
-      
-      {
-        name: "Test",
-        layer: new ol.layer.Tile({
-          visible: false,
-          source: new ol.source.WMTS({
-            url: 'http://app.hustopece-city.cz/mapcache/wmts?',
-            layer: 'Hustopecsko',
             style: 'default',
             matrixSet: 'jtsk:epsg:5514',
             format: 'image/png',
@@ -131,7 +115,35 @@ var layers = [
       }
       */
     ]
+  },
+  {
+    group: "Testovací",
+    items: [
+      
+      {
+        name: "Open street map",
+        layer: new ol.layer.Tile({
+          visible: false,
+          source: new ol.source.OSM()
+        })
+      },
+      
+      {
+        name: "Test",
+        layer: new ol.layer.Tile({
+          visible: false,
+          source: new ol.source.WMTS({
+            url: 'http://app.hustopece-city.cz/mapcache/wmts?',
+            layer: 'Hustopecsko',
+            style: 'default',
+            matrixSet: 'jtsk:epsg:5514',
+            format: 'image/png',
+            tileGrid: wmtsTileGrid
+          })
+        })
+      },
+      
+    ]
   }
-
 ];
 

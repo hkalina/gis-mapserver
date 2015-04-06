@@ -1,17 +1,15 @@
 
+$(function(){
+  $(".menuaccordion").accordion({
+    collapsible: true,
+    animate: 200
+  });
+});
+
 var map = new ol.Map({
-  controls: ol.control.defaults({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
+  controls: ol.control.defaults({}),
   target: 'map',
-  view: new ol.View({
-    center: [0,0],
-    //center: [-591909.64, -1189823.30],
-    //center: ol.proj.transform([16.735514831543, 48.941200861905635], 'EPSG:4326', jtskProjection),
-    zoom: 6
-  })
+  view: view
 });
 
 /*
@@ -33,7 +31,14 @@ for(i = 0; i < layers.length; i++){
   $(inputElement).attr("type","checkbox");
   $(labelElement).append(inputElement);
   $(labelElement).append(layers[i].group);
-  $(labelElement).change(function(){ alert("a?"); });
+  $(inputElement).attr("groupid",i);
+  $(inputElement).change(function(){
+    var state = $(this).prop("checked");
+    $(this).parent().parent().find('ul').find('input').each(function(){
+      $(this).prop("checked",state);
+      $(this).trigger("change");
+    });
+  });
   $(liElement).append(labelElement);
   var ul2Element = document.createElement("ul");
   
@@ -47,10 +52,13 @@ for(i = 0; i < layers.length; i++){
     $(input2Element).attr("groupid",i);
     $(label2Element).append(input2Element);
     $(label2Element).append(layers[i].items[j].name);
-    $(input2Element).change(toggleLayer);
+    $(input2Element).change(function(){
+      var groupid = parseInt($(this).attr("groupid"));
+      var layerid = parseInt($(this).attr("layerid"));
+      layers[groupid].items[layerid].layer.setVisible($(this).prop('checked'));
+    });
     $(li2Element).append(label2Element);
     $(ul2Element).append(li2Element);
-    
     map.addLayer(layers[i].items[j].layer);
     
   }
@@ -58,15 +66,6 @@ for(i = 0; i < layers.length; i++){
   $(liElement).append(ul2Element);
   $(ulElement).append(liElement);
   $("#layers").append(ulElement);
+  
 }
-
-function toggleLayer(){
-  var groupid = parseInt($(this).attr("groupid"));
-  var layerid = parseInt($(this).attr("layerid"));
-  layers[groupid].items[layerid].layer.setVisible($(this).prop('checked'));
-}
-
-
-//console.log( ol.proj.transform([16.735514831543, 48.941200861905635], 'EPSG:4326', 'EPSG:4326') );
-
 

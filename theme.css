@@ -21,8 +21,11 @@ html, body {
 }
 
 #layers {
-  margin: 10px 0px;
   padding: 10px 0px;
+}
+
+.ui-accordion-header {
+  margin: 0px;
 }
 
 #layers ul {
@@ -52,5 +55,18 @@ html, body {
     position: relative;
     top: -2px;
     margin-right: 4px;
+}
+
+#drawing {
+  height: auto !important;
+}
+
+#drawingToolbar {
+  padding: 2px;
+  display: inline-block;
+}
+
+*+html #drawingToolbar {
+  display: inline; /* support: IE7 */
 }
 
