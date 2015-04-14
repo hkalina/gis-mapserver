@@ -12,6 +12,8 @@ var map = new ol.Map({
   view: view
 });
 
+map.addControl(new ol.control.MousePosition());
+
 /*
 $(map.getViewport()).on("click", function(e) {
     alert("click1");

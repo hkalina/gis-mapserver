@@ -86,6 +86,9 @@ function deleteAllDrawing(){
 
 var formatLength = function(line) {
   var length = Math.round(line.getLength() * 100) / 100;
+  
+  //var length = line.getGeodesicLength(new ol.proj.Projection("EPSG:5514"));
+  
   var output;
   if (length > 100) {
     output = (Math.round(length / 1000 * 100) / 100) + ' km';

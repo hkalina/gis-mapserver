@@ -70,3 +70,7 @@ html, body {
   display: inline; /* support: IE7 */
 }
 
+.ol-mouse-position {
+  background-color: white;
+}
+
