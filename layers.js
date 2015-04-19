@@ -81,14 +81,13 @@ var view = new ol.View({
   projection: projectionCuzk,
   //center: [-591909.64, -1189823.30], // JTSK
   center: ol.proj.transform([16.7375636, 48.9399231], 'EPSG:4326', 'EPSG:5514'), // WGS84 -> JTSK
-  //zoom: 9
   zoom: 6
 });
 
 var iconFeatures=[];
 
 iconFeatures.push(new ol.Feature({
-  geometry: new ol.geom.Point(ol.proj.transform([16.7375636, 48.9399267], 'EPSG:4326', 'EPSG:5514')),
+  geometry: new ol.geom.Point([-591776.4, -1189977.6]),
   name: 'Kostel'
 }));
 
