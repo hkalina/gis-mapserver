@@ -13,11 +13,10 @@ var map = new ol.Map({
 });
 
 /*
-$(map.getViewport()).on("click", function(e) {
-    alert("click1");
-    console.log(e);
+$(map.getViewport()).on("click", function(e){
     map.forEachFeatureAtPixel(map.getEventPixel(e), function (feature, layer) {
-        alert("click2");
+        console.log(feature);
+        console.log(layer);
     });
 });
 */

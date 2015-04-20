@@ -10,10 +10,14 @@ html, body {
 
 #menu {
   float: left;
-  width: 230px;
+  width: 250px;
   height: 100%;
   overflow: auto;
   background-color: #DDD;
+}
+
+#menu div {
+  overflow: visible;
 }
 
 #map {

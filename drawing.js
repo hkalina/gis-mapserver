@@ -2,29 +2,11 @@
 // http://openlayers.org/en/v3.1.0/examples/measure.html
 // http://openlayers.org/en/v3.1.0/examples/draw-and-modify-features.html
 
-var sketch; // feature (contain geometry)
-var draw; // interaction
+var drawing; // interaction
 
-var featureOverlay = new ol.FeatureOverlay({
-  style: new ol.style.Style({
-    fill: new ol.style.Fill({
-      color: 'rgba(255, 255, 255, 0.2)'
-    }),
-    stroke: new ol.style.Stroke({
-      color: '#FC3',
-      width: 2
-    }),
-    image: new ol.style.Circle({
-      radius: 5,
-      fill: new ol.style.Fill({
-        color: '#FC3'
-      })
-    })
-  })
-});
+var featureOverlay = new ol.FeatureOverlay({});
 featureOverlay.setMap(map);
 
-/*
 var modify = new ol.interaction.Modify({
   features: featureOverlay.getFeatures(),
   deleteCondition: function(event) {
@@ -32,9 +14,42 @@ var modify = new ol.interaction.Modify({
   }
 });
 map.addInteraction(modify);
-*/
 
-// vypisuje v prubehu kresleni
+function startDrawing(){
+  
+  drawing = new ol.interaction.Draw({
+    features: featureOverlay.getFeatures(), // vrstva kam ukladat nakreslene objekty
+    type: $("#drawingTool input[type='radio']:checked").val()
+  });
+  map.addInteraction(drawing);
+  
+  drawing.on('drawend', function(evt){
+    var opacitedColor = ol.color.asArray($("#backgroundColorPicker").data("plugin_tinycolorpicker").colorHex).slice();
+    opacitedColor[3] = $("#visibilitySlider").slider("value")/100.0;
+    evt.feature.setStyle(new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: opacitedColor
+      }),
+      stroke: new ol.style.Stroke({
+        color: $("#colorPicker").data("plugin_tinycolorpicker").colorHex,
+        width: 2
+      }),
+      image: new ol.style.Circle({
+        radius: 7,
+        fill: new ol.style.Fill({
+          color: $("#colorPicker").data("plugin_tinycolorpicker").colorHex
+        })
+      })
+    }));
+  }, this);
+}
+
+function stopDrawing(){
+  map.removeInteraction(drawing);
+}
+
+/*
+// jen vypis v prubehu kresleni
 $(map.getViewport()).on('mousemove', function(evt){
   if(sketch){
     var output = "?";
@@ -48,15 +63,8 @@ $(map.getViewport()).on('mousemove', function(evt){
   }
 });
 
-function startDrawing(){
-  var type = $("#drawingTool input[type='radio']:checked").val();
-  draw = new ol.interaction.Draw({
-    features: featureOverlay.getFeatures(), // vrstva kam ukladat nakreslene objekty
-    type: type
-  });
-  map.addInteraction(draw);
-  
   draw.on('drawstart', function(evt){
+    var type = $("#drawingTool input[type='radio']:checked").val();
     sketch = evt.feature;
     sketchElement = document.createElement('tr');
     var titleTdElement = document.createElement('td');
@@ -68,21 +76,6 @@ function startDrawing(){
     sketchElement.appendChild(valueTdElement);
     $("#drawing table").append(sketchElement);
   }, this);
-  
-  draw.on('drawend', function(evt){
-    sketch = null;
-    sketchElement = null;
-  }, this);
-}
-
-function stopDrawing(){
-  map.removeInteraction(draw);
-}
-
-function deleteAllDrawing(){
-  map.removeInteraction(draw);
-  alert("not implemented");
-}
 
 var formatLength = function(line) {
   var length = Math.round(line.getLength() * 100) / 100;
@@ -105,9 +98,15 @@ var formatArea = function(polygon) {
   }
   return output;
 };
+*/
 
-$("#drawingTool input[type='radio']").change(function(){
+$("#drawingTool input[type='radio']").click(function(){
   stopDrawing();
   startDrawing();
+});
+
+$("#drawingDelete").click(function(){
+  map.removeInteraction(drawing);
+  featureOverlay.getFeatures().clear();
 });
 

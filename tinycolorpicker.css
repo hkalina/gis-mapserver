@@ -1,0 +1,66 @@
+.colorPicker {
+    position: relative;
+    margin: 10px 0px;
+}
+
+.colorPicker .track {
+    background:     #EFEFEF url("libs/text-color.png") no-repeat 50% 50%;
+    height:         150px;
+    width:          150px;
+    padding:        10px;
+    position:       absolute;
+    cursor:         crosshair;
+    float:          left;
+    left:           20px;
+    top:            -71px;
+    display:        none;
+    border:         1px solid #ccc;
+    z-index:        15;
+    -webkit-border-radius: 150px;
+    -moz-border-radius: 150px;
+    border-radius: 150px;
+
+}
+
+.colorPicker .color {
+    width:          150px;
+    height:         25px;
+    text-decoration: none;
+    border:         1px solid #ccc;
+    display:        block;
+    position:       relative;
+    z-index:        11;
+    color:           #666;
+    background-color: #EFEFEF;
+    -webkit-border-radius: 27px;
+    -moz-border-radius: 27px;
+    border-radius: 27px;
+    cursor: pointer;
+    padding: 0 0 0 10px;
+}
+
+.colorPicker .colorInner {
+    width:          25px;
+    height:         25px;
+    float: right;
+    -webkit-border-radius: 27px;
+    -moz-border-radius: 27px;
+    border-radius: 27px;
+    border-left: 3px solid #ccc;
+}
+
+.colorPicker .dropdown {
+    list-style: none;
+    display: none;
+    width: 27px;
+    position: absolute;
+    top: 26px;
+    border: 1px solid #ccc;
+    right: 0;
+    z-index: 1000;
+}
+
+.colorPicker .dropdown li{
+    height: 25px;
+    cursor: pointer;
+}

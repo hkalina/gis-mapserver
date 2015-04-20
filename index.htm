@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>GISová aplikace</title>
     <link rel="stylesheet" href="theme.css" type="text/css">
+    <link rel="stylesheet" href="tinycolorpicker.css" type="text/css">
     <link rel="stylesheet" href="print.css" type="text/css" media="print">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/ol3/3.4.0/ol.css" type="text/css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.css" type="text/css">
@@ -12,6 +13,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/ol3/3.4.0/ol.min.js" type="text/javascript"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.5/proj4.js" type="text/javascript"></script>
+    <script src="libs/jquery.tinycolorpicker.min.js" type="text/javascript"></script>
     <meta name="author" content="Jan Kalina honza889@gmail.com"> 
   </head>
   <body>
@@ -31,9 +33,27 @@
   <span id="drawingTool">
     <input type="radio" id="drawingLineString" name="radio" value="LineString"><label for="drawingLineString">Měření vzdálenosti / kreslení trasy</label>
     <input type="radio" id="drawingPolygon" name="radio" value="Polygon"><label for="drawingPolygon">Měření plochy / kreslení polygonu</label>
+    <input type="radio" id="drawingPoint" name="radio" value="Point"><label for="drawingPoint">Měření plochy / kreslení polygonu</label>
   </span>
   <button id="drawingDelete">Smazat všechny kresby</button>
 </div>
+
+<div id="colorPicker" class="colorPicker">
+<a class="color"><span>Barva čáry</span><div class="colorInner"></div></a>
+<div class="track"></div>
+<ul class="dropdown"><li></li></ul>
+<input type="hidden" class="colorInput"/>
+</div>
+
+<div id="backgroundColorPicker" class="colorPicker">
+<a class="color"><span>Barva pozadí</span><div class="colorInner"></div></a>
+<div class="track"></div>
+<ul class="dropdown"><li></li></ul>
+<input type="hidden" class="colorInput"/>
+</div>
+
+Průhlednost
+<div id="visibilitySlider"></div>
 
 <table>
 </table>
@@ -42,8 +62,19 @@
 $("#drawingTool").buttonset();
 $("#drawingLineString").button({icons: {primary: "ui-icon-arrowthick-2-e-w"}, text: false});
 $("#drawingPolygon").button({icons: {primary: "ui-icon-arrow-4-diag"}, text: false});
+$("#drawingPoint").button({icons: {primary: "ui-icon-star"}, text: false});
 $("#drawingDelete").button({icons: {primary: "ui-icon-trash"}, text: false});
-$("#drawingDelete").click(deleteAllDrawing);
+$("#colorPicker").tinycolorpicker();
+$("#colorPicker").data("plugin_tinycolorpicker").setColor("#000000");
+$("#backgroundColorPicker").tinycolorpicker();
+$("#backgroundColorPicker").data("plugin_tinycolorpicker").setColor("#AAAAAA");
+$("#visibilitySlider").slider({
+  orientation: "horizontal",
+  range: "min",
+  min: 0,
+  max: 100,
+  value: 50
+});
 </script>
 </div><!--drawing-->
 </div><!--menuaccordion-->
