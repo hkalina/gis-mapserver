@@ -34,9 +34,10 @@ var modify = new ol.interaction.Modify({
 map.addInteraction(modify);
 */
 
+// vypisuje v prubehu kresleni
 $(map.getViewport()).on('mousemove', function(evt){
   if(sketch){
-    var output;
+    var output = "?";
     var geom = sketch.getGeometry();
     if(geom instanceof ol.geom.Polygon){
       output = formatArea(geom);
@@ -50,8 +51,7 @@ $(map.getViewport()).on('mousemove', function(evt){
 function startDrawing(){
   var type = $("#drawingTool input[type='radio']:checked").val();
   draw = new ol.interaction.Draw({
-    //source: vectorSource,
-    features: featureOverlay.getFeatures(),
+    features: featureOverlay.getFeatures(), // vrstva kam ukladat nakreslene objekty
     type: type
   });
   map.addInteraction(draw);
@@ -86,9 +86,6 @@ function deleteAllDrawing(){
 
 var formatLength = function(line) {
   var length = Math.round(line.getLength() * 100) / 100;
-  
-  //var length = line.getGeodesicLength(new ol.proj.Projection("EPSG:5514"));
-  
   var output;
   if (length > 100) {
     output = (Math.round(length / 1000 * 100) / 100) + ' km';

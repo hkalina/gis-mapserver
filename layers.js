@@ -1,15 +1,8 @@
 /* Definice vrstev */
 
-// geoportal:
-// +proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs
-// extent: -1011629.1169187829364091, -1315378.8275233022868633, -375334.0235986501793377, -831288.5369589240290225
-
-// hust:
-// extent: -87146434.2217337489128113, -58211149.8546549826860428, 91958982.9656133651733398, -520186.0811873441562057
-
 // JTSK = EPSG:5514
-// Hustopece Kostel JTSK:  X=-591 773.170 Y=-1 189 974.371
-// Hustopece Kostel WGS:     48.9399231, 16.7375636
+// Hustopece Kostel JTSK (EPSG:5514):  X=-591 773.170 Y=-1 189 974.371
+// Hustopece Kostel WGS84 (EPSG:4326): 48.9399231, 16.7375636
 
 // From epsg.io/5514
 //proj4.defs("EPSG:5514", "+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs");
@@ -79,7 +72,6 @@ var wmtsTileGridHust = new ol.tilegrid.WMTS({
 
 var view = new ol.View({
   projection: projectionCuzk,
-  //center: [-591909.64, -1189823.30], // JTSK
   center: ol.proj.transform([16.7375636, 48.9399231], 'EPSG:4326', 'EPSG:5514'), // WGS84 -> JTSK
   zoom: 6
 });
@@ -92,7 +84,7 @@ iconFeatures.push(new ol.Feature({
 }));
 
 iconFeatures.push(new ol.Feature({
-  geometry: new ol.geom.Point(ol.proj.transform([16.7161864, 48.9391936], 'EPSG:4326', 'EPSG:5514')),
+  geometry: new ol.geom.Point(ol.proj.transform([16.7161864, 48.9391936], 'EPSG:4326', 'EPSG:5514')), // WGS84 -> JTSK
   name: 'Vodojem'
 }));
 
@@ -106,7 +98,7 @@ var vectorLayer = new ol.layer.Vector({
       anchorXUnits: 'fraction',
       anchorYUnits: 'fraction',
       opacity: 0.7,
-      src: 'http://www.clker.com/cliparts/D/K/l/x/c/2/map-marker-th.png'
+      src: 'icons/sunny.png'
     })
   })
 });
@@ -135,7 +127,7 @@ var layers = [
       {
         name: "Základní mapa",
         layer: new ol.layer.Tile({
-          visible: true,
+          visible: false,
           source: new ol.source.WMTS({
             url: 'http://geoportal-zm.cuzk.cz/WMTS_ZM/WMTService.aspx?',
             layer: 'zm',
@@ -158,7 +150,7 @@ var layers = [
       {
         name: "Hustopečsko",
         layer: new ol.layer.Tile({
-          visible: true,
+          visible: false,
           source: new ol.source.WMTS({
             url: 'http://app.hustopece-city.cz/mapcache/wmts?',
             layer: 'Hustopecsko',
