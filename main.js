@@ -12,17 +12,17 @@ var map = new ol.Map({
   view: view
 });
 
-/*
 $(map.getViewport()).on("click", function(e){
     map.forEachFeatureAtPixel(map.getEventPixel(e), function (feature, layer) {
         console.log(feature);
         console.log(layer);
     });
 });
-*/
 
-var ulElement = document.createElement("ul");
-for(i = 0; i < layers.length; i++){
+function printLayers(){
+ $("#layers").empty();
+ var ulElement = document.createElement("ul");
+ for(i = 0; i < layers.length; i++){
   
   var liElement = document.createElement("li");
   var labelElement = document.createElement("label");
@@ -42,7 +42,6 @@ for(i = 0; i < layers.length; i++){
   var ul2Element = document.createElement("ul");
   
   for(j = 0; j < layers[i].items.length; j++){
-    
     var li2Element = document.createElement("li");
     var label2Element = document.createElement("label");
     var input2Element = document.createElement("input");
@@ -59,12 +58,72 @@ for(i = 0; i < layers.length; i++){
     $(li2Element).append(label2Element);
     $(ul2Element).append(li2Element);
     map.addLayer(layers[i].items[j].layer);
-    
   }
   
   $(liElement).append(ul2Element);
   $(ulElement).append(liElement);
   $("#layers").append(ulElement);
-  
+ }
 }
+printLayers();
+
+// dragging map files into map window
+var dragAndDropInteraction = new ol.interaction.DragAndDrop({
+  formatConstructors: [
+    ol.format.GPX,
+    ol.format.GeoJSON,
+    ol.format.IGC,
+    ol.format.KML,
+    ol.format.TopoJSON
+  ]
+});
+map.addInteraction(dragAndDropInteraction);
+
+dragAndDropInteraction.on('addfeatures', function(event) {
+  var vectorSource = new ol.source.Vector({
+    features: event.features,
+    projection: event.projection
+  });
+  map.getLayers().push(new ol.layer.Image({
+    source: new ol.source.ImageVector({
+      source: vectorSource
+    })
+  }));
+});
+
+// export into KML
+$("#export-kml").click(function(){
+  console.log(featureOverlay.getFeatures());
+  var kmlFormat = new ol.format.KML({});
+  var exported = kmlFormat.writeFeatures(featureOverlay.getFeatures().getArray(),{
+    dataProjection: 'EPSG:4326',
+    featureProjection: 'EPSG:5514'
+  });
+  window.location.href = 'data:application/vnd.google-earth.kml+xml;base64,' + btoa(exported);
+});
+
+function save(){
+  var geoJSON = new ol.format.GeoJSON;
+  var exported = {
+    features: geoJSON.writeFeatures(featureOverlay.getFeatures().getArray())
+  };
+  window.location.hash = '#' + encodeURIComponent(JSON.stringify(exported));
+  $("#export-url").val(window.location.href);
+}
+
+function load(){
+  console.log("loading...");
+  if(window.location.hash.length <= 1) return;
+  var geoJSON = new ol.format.GeoJSON;
+  var exported = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
+  
+  featureOverlay.getFeatures().clear();
+  $.each(geoJSON.readFeatures(exported.features), function(index, feature){
+    console.log(feature);
+    featureOverlay.getFeatures().push(feature);
+  });
+  
+  console.log("loaded");
+}
+$(load);
 

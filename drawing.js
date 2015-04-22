@@ -16,9 +16,8 @@ var modify = new ol.interaction.Modify({
 map.addInteraction(modify);
 
 function startDrawing(){
-  
   drawing = new ol.interaction.Draw({
-    features: featureOverlay.getFeatures(), // vrstva kam ukladat nakreslene objekty
+    features: featureOverlay.getFeatures(),
     type: $("#drawingTool input[type='radio']:checked").val()
   });
   map.addInteraction(drawing);
@@ -41,12 +40,53 @@ function startDrawing(){
         })
       })
     }));
+    printDrawed();
   }, this);
+  
+  //$(map.getViewport()).on('mousemove', function(evt){
+  //  printDrawed();
+  //});
 }
 
 function stopDrawing(){
   map.removeInteraction(drawing);
 }
+
+function printDrawed(){
+  console.log(featureOverlay.getFeatures().getLength());
+  $("#features table").empty();
+  featureOverlay.getFeatures().forEach(function(feature){
+    
+    console.log(feature.getGeometry().getType());
+    
+    var type = $("#drawingTool input[type='radio']:checked").val();
+    featureElement = document.createElement('tr');
+    var titleTdElement = document.createElement('td');
+    titleTdElement.className = "titleTd";
+    switch(feature.getGeometry().getType()){
+      case "LineString": titleTdElement.innerHTML = "Trasa"; break;
+      case "Polygon": titleTdElement.innerHTML = "Polygon"; break;
+      case "Point": titleTdElement.innerHTML = "Bod"; break;
+      default: titleTdElement.innerHTML = "?"; break;
+    }
+    var valueTdElement = document.createElement('td');
+    valueTdElement.className = "valueTd";
+    
+    switch(feature.getGeometry().getType()){
+      case "LineString": valueTdElement.innerHTML = formatLength(feature.getGeometry()); break;
+      case "Polygon": valueTdElement.innerHTML = formatArea(feature.getGeometry()); break;
+      case "Point": valueTdElement.innerHTML = ""; break;
+      default: valueTdElement.innerHTML = "?"; break;
+    }
+    
+    featureElement.appendChild(titleTdElement);
+    featureElement.appendChild(valueTdElement);
+    $("#features table").append(featureElement);
+  });
+  $(".menuaccordion").accordion("refresh");
+}
+
+
 
 /*
 // jen vypis v prubehu kresleni
@@ -77,8 +117,11 @@ $(map.getViewport()).on('mousemove', function(evt){
     $("#drawing table").append(sketchElement);
   }, this);
 
-var formatLength = function(line) {
-  var length = Math.round(line.getLength() * 100) / 100;
+
+*/
+
+function formatLength(feature) {
+  var length = Math.round(feature.getLength() * 100) / 100;
   var output;
   if (length > 100) {
     output = (Math.round(length / 1000 * 100) / 100) + ' km';
@@ -88,8 +131,8 @@ var formatLength = function(line) {
   return output;
 };
 
-var formatArea = function(polygon) {
-  var area = polygon.getArea();
+function formatArea(feature) {
+  var area = feature.getArea();
   var output;
   if (area > 10000) {
     output = (Math.round(area / 1000000 * 100) / 100) + ' km<sup>2</sup>';
@@ -98,7 +141,6 @@ var formatArea = function(polygon) {
   }
   return output;
 };
-*/
 
 $("#drawingTool input[type='radio']").click(function(){
   stopDrawing();
@@ -108,5 +150,11 @@ $("#drawingTool input[type='radio']").click(function(){
 $("#drawingDelete").click(function(){
   map.removeInteraction(drawing);
   featureOverlay.getFeatures().clear();
+});
+
+$(document).on('keyup',function(evt){
+  if(evt.keyCode == 27){ // ESC
+    map.removeInteraction(drawing);
+  }
 });
 

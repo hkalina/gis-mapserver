@@ -31,11 +31,11 @@
 
 <div id="drawingToolbar" class="ui-widget-header ui-corner-all">
   <span id="drawingTool">
-    <input type="radio" id="drawingLineString" name="radio" value="LineString"><label for="drawingLineString">Měření vzdálenosti / kreslení trasy</label>
-    <input type="radio" id="drawingPolygon" name="radio" value="Polygon"><label for="drawingPolygon">Měření plochy / kreslení polygonu</label>
-    <input type="radio" id="drawingPoint" name="radio" value="Point"><label for="drawingPoint">Měření plochy / kreslení polygonu</label>
+    <input type="radio" id="drawingLineString" name="radio" value="LineString"><label for="drawingLineString">Trasa</label>
+    <input type="radio" id="drawingPolygon" name="radio" value="Polygon"><label for="drawingPolygon">Polygon</label>
+    <input type="radio" id="drawingPoint" name="radio" value="Point"><label for="drawingPoint">Bod</label>
   </span>
-  <button id="drawingDelete">Smazat všechny kresby</button>
+  <button id="drawingDelete">Smazat kresby</button>
 </div>
 
 <div id="colorPicker" class="colorPicker">
@@ -55,9 +55,6 @@
 Průhlednost
 <div id="visibilitySlider"></div>
 
-<table>
-</table>
-
 <script>
 $("#drawingTool").buttonset();
 $("#drawingLineString").button({icons: {primary: "ui-icon-arrowthick-2-e-w"}, text: false});
@@ -65,9 +62,9 @@ $("#drawingPolygon").button({icons: {primary: "ui-icon-arrow-4-diag"}, text: fal
 $("#drawingPoint").button({icons: {primary: "ui-icon-star"}, text: false});
 $("#drawingDelete").button({icons: {primary: "ui-icon-trash"}, text: false});
 $("#colorPicker").tinycolorpicker();
-$("#colorPicker").data("plugin_tinycolorpicker").setColor("#000000");
+$("#colorPicker").data("plugin_tinycolorpicker").setColor("#555555");
 $("#backgroundColorPicker").tinycolorpicker();
-$("#backgroundColorPicker").data("plugin_tinycolorpicker").setColor("#AAAAAA");
+$("#backgroundColorPicker").data("plugin_tinycolorpicker").setColor("#FFFF99");
 $("#visibilitySlider").slider({
   orientation: "horizontal",
   range: "min",
@@ -81,16 +78,33 @@ $("#visibilitySlider").slider({
 
 
 <div class="menuaccordion">
+<h3>Nakreslené objekty</h3>
+<div id="features">
+
+<table>
+</table>
+
+</div><!--export-->
+</div><!--menuaccordion-->
+
+
+<div class="menuaccordion">
 <h3>Export a tisk</h3>
 <div id="export">
 
 <button onclick="window.print();">Tisk</button>
+
+<button id="export-kml">KML kresby</button>
+
+URL:
+<input id="export-url" type="text" value="" readonly>
 
 <script>
 $("#export button").button();
 </script>
 </div><!--export-->
 </div><!--menuaccordion-->
+
 
 </div><!--menu-->
 
