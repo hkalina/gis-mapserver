@@ -86,40 +86,6 @@ function printDrawed(){
   $(".menuaccordion").accordion("refresh");
 }
 
-
-
-/*
-// jen vypis v prubehu kresleni
-$(map.getViewport()).on('mousemove', function(evt){
-  if(sketch){
-    var output = "?";
-    var geom = sketch.getGeometry();
-    if(geom instanceof ol.geom.Polygon){
-      output = formatArea(geom);
-    }else if (geom instanceof ol.geom.LineString){
-      output = formatLength(geom);
-    }
-    $(sketchElement).children(".valueTd").html(output);
-  }
-});
-
-  draw.on('drawstart', function(evt){
-    var type = $("#drawingTool input[type='radio']:checked").val();
-    sketch = evt.feature;
-    sketchElement = document.createElement('tr');
-    var titleTdElement = document.createElement('td');
-    titleTdElement.className = "titleTd";
-    titleTdElement.innerHTML = type == "LineString" ? "Trasa" : "Polygon";
-    var valueTdElement = document.createElement('td');
-    valueTdElement.className = "valueTd";
-    sketchElement.appendChild(titleTdElement);
-    sketchElement.appendChild(valueTdElement);
-    $("#drawing table").append(sketchElement);
-  }, this);
-
-
-*/
-
 function formatLength(feature) {
   var length = Math.round(feature.getLength() * 100) / 100;
   var output;

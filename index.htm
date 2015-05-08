@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>GISová aplikace</title>
-    <link rel="stylesheet" href="theme.css" type="text/css">
+    <link rel="stylesheet" href="theme.css" type="text/css" media="handheld,projection,screen">
     <link rel="stylesheet" href="tinycolorpicker.css" type="text/css">
     <link rel="stylesheet" href="print.css" type="text/css" media="print">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/ol3/3.4.0/ol.css" type="text/css">
@@ -94,9 +94,10 @@ $("#visibilitySlider").slider({
 
 <button onclick="window.print();">Tisk</button>
 
-<button id="export-kml">KML kresby</button>
+<button id="export-kml">Uložit do KML</button>
 
-URL:
+<button id="export-link">Získat odkaz</button>
+
 <input id="export-url" type="text" value="" readonly>
 
 <script>

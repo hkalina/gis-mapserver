@@ -1,14 +1,10 @@
 /* Definice vrstev */
 
-// JTSK = EPSG:5514
-// Hustopece Kostel JTSK (EPSG:5514):  X=-591 773.170 Y=-1 189 974.371
+// Prevod JTSK <=> EPSG:5514
+// Hustopece Kostel SJTSK (EPSG:5514): X=-591 773.170 Y=-1 189 974.371
 // Hustopece Kostel WGS84 (EPSG:4326): 48.9399231, 16.7375636
 
-// From epsg.io/5514
-//proj4.defs("EPSG:5514", "+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=589,76,480,0,0,0,0 +units=m +no_defs");
-// From QGIS
-//proj4.defs("EPSG:5514", "+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +towgs84=542.5,89.2,456.9,5.517,2.275,5.516,6.96 +pm=greenwich +units=m +no_defs");
-// raon
+// Z GIS ORP Hustopece
 proj4.defs("EPSG:5514", "+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +pm=greenwich +units=m +no_defs +towgs84=570.8,85.7,462.8,4.998,1.587,5.261,3.56");
 
 
@@ -85,21 +81,6 @@ iconFeatures.push(new ol.Feature({
   name: 'Vodojem'
 }));
 
-var vectorLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    features: iconFeatures
-  }),
-  style: new ol.style.Style({
-    image: new ol.style.Icon({
-      anchor: [0.5, 1.0],
-      anchorXUnits: 'fraction',
-      anchorYUnits: 'fraction',
-      opacity: 0.7,
-      src: 'icons/sunny.png'
-    })
-  })
-});
-
 var layers = [
   {
     group: "ČÚZK",
@@ -141,7 +122,7 @@ var layers = [
   },
   
   {
-    group: "Mapcache Hustopeče",
+    group: "WMTS Hustopeče",
     items: [
       
       {
@@ -176,8 +157,15 @@ var layers = [
         })
       },
       
+    ]
+  },
+
+  {
+    group: "WMS Hustopeče",
+    items: [
+      
       {
-        name: "WMS: Hustopecsko",
+        name: "Hustopečsko",
         layer: new ol.layer.Image({
           visible: false,
           opacity: 0.9,
@@ -193,7 +181,7 @@ var layers = [
       },
       
       {
-        name: "WMS: Brumovice",
+        name: "Brumovice",
         layer: new ol.layer.Image({
           visible: false,
           source: new ol.source.ImageWMS({
@@ -206,12 +194,37 @@ var layers = [
         })
       },
       
+    ]
+  },
+
+  {
+    group: "Testovací",
+    items: [
+      
       {
-        name: "Kostel",
-        layer: vectorLayer
-      },
+        name: "Kostel a vodojem",
+        layer: new ol.layer.Vector({
+          source: new ol.source.Vector({
+            features: iconFeatures
+          }),
+          style: new ol.style.Style({
+            image: new ol.style.Icon({
+              anchor: [0.5, 1.0],
+              anchorXUnits: 'fraction',
+              anchorYUnits: 'fraction',
+              opacity: 0.7,
+              src: 'icons/sunny.png'
+            })
+          })
+        })
+      }
       
     ]
+  },
+
+  {
+    group: "Vlastní vrstvy",
+    items: []
   }
 ];
 

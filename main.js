@@ -48,6 +48,9 @@ function printLayers(){
     $(input2Element).attr("type","checkbox");
     $(input2Element).attr("layerid",j);
     $(input2Element).attr("groupid",i);
+    if(layers[i].items[j].layer.getVisible()){
+      $(input2Element).attr("checked","checked");
+    }
     $(label2Element).append(input2Element);
     $(label2Element).append(layers[i].items[j].name);
     $(input2Element).change(function(){
@@ -67,7 +70,7 @@ function printLayers(){
 }
 printLayers();
 
-// dragging map files into map window
+// dragging files into map window
 var dragAndDropInteraction = new ol.interaction.DragAndDrop({
   formatConstructors: [
     ol.format.GPX,
@@ -77,23 +80,20 @@ var dragAndDropInteraction = new ol.interaction.DragAndDrop({
     ol.format.TopoJSON
   ]
 });
-map.addInteraction(dragAndDropInteraction);
-
-dragAndDropInteraction.on('addfeatures', function(event) {
-  var vectorSource = new ol.source.Vector({
-    features: event.features,
-    projection: event.projection
-  });
+dragAndDropInteraction.on('addfeatures', function(event){
   map.getLayers().push(new ol.layer.Image({
     source: new ol.source.ImageVector({
-      source: vectorSource
+      source: new ol.source.Vector({
+        features: event.features,
+        projection: event.projection
+      })
     })
   }));
 });
+map.addInteraction(dragAndDropInteraction);
 
 // export into KML
 $("#export-kml").click(function(){
-  console.log(featureOverlay.getFeatures());
   var kmlFormat = new ol.format.KML({});
   var exported = kmlFormat.writeFeatures(featureOverlay.getFeatures().getArray(),{
     dataProjection: 'EPSG:4326',
@@ -102,7 +102,11 @@ $("#export-kml").click(function(){
   window.location.href = 'data:application/vnd.google-earth.kml+xml;base64,' + btoa(exported);
 });
 
-function save(){
+var selectInteraction = new ol.interaction.Select();
+map.addInteraction(selectInteraction);
+
+/*
+function saveHash(){ // save encoded GeoJSON into URL
   var geoJSON = new ol.format.GeoJSON;
   var exported = {
     features: geoJSON.writeFeatures(featureOverlay.getFeatures().getArray())
@@ -111,8 +115,7 @@ function save(){
   $("#export-url").val(window.location.href);
 }
 
-function load(){
-  console.log("loading...");
+$(function(){ // load URL encoded GeoJSON
   if(window.location.hash.length <= 1) return;
   var geoJSON = new ol.format.GeoJSON;
   var exported = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
@@ -122,8 +125,74 @@ function load(){
     console.log(feature);
     featureOverlay.getFeatures().push(feature);
   });
-  
-  console.log("loaded");
-}
-$(load);
+});
+*/
 
+// export into KML, save to server and get URL
+$("#export-link").click(function(){
+  var kmlFormat = new ol.format.KML({});
+  var exported = kmlFormat.writeFeatures(featureOverlay.getFeatures().getArray(),{
+    dataProjection: 'EPSG:4326',
+    featureProjection: 'EPSG:5514'
+  });
+  
+  $.post("save.php", { exported: exported }, function(data){
+    window.location.hash = '#' + data;
+    $("#export-url").val(window.location.href);
+  });
+});
+
+$("#export-link").click(function(){
+  var kmlFormat = new ol.format.KML({});
+  var exported = kmlFormat.writeFeatures(featureOverlay.getFeatures().getArray(),{
+    dataProjection: 'EPSG:4326',
+    featureProjection: 'EPSG:5514'
+  });
+  
+  $.post("save.php", { exported: exported }, function(data){
+    window.location.hash = '#' + data;
+    $("#export-url").val(window.location.href);
+  });
+});
+
+
+$(function(){ // loading of KML from URL
+  var vector = new ol.layer.Vector({
+    source: new ol.source.KML({
+      projection: 'EPSG:5514',
+      url: decodeURIComponent(window.location.hash.substring(1))
+    })
+  });
+  var wasLoaded = false;
+  vector.getSource().on('change', function(evt){
+    if(!wasLoaded){
+      wasLoaded = true;
+      console.log("loading...");
+      vector.getSource().forEachFeature(function(feature){
+        console.log(feature);
+        featureOverlay.getFeatures().push(feature);
+      });
+    }
+  });
+});
+
+
+/*
+map.on('singleclick', function(evt) {
+  alert("click");
+  
+  var wmsSource = new ol.source.ImageWMS({
+            url: 'http://app.hustopece-city.cz/mapcache/',
+            params: {
+              'LAYERS': 'Hustopecsko'
+            },
+            serverType: 'mapserver',
+            projection: projectionCuzk
+          });
+  
+  var url = wmsSource.getGetFeatureInfoUrl(
+      evt.coordinate, view.getResolution(), 'EPSG:3857',
+      {'INFO_FORMAT': 'text/html'});
+  alert(url);
+});
+*/
