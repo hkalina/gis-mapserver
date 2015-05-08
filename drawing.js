@@ -1,9 +1,8 @@
-// predlohy:
-// http://openlayers.org/en/v3.1.0/examples/measure.html
-// http://openlayers.org/en/v3.1.0/examples/draw-and-modify-features.html
 
 var featureOverlay = new ol.FeatureOverlay({});
 featureOverlay.setMap(map);
+
+var drawingMode = false;
 
 var drawing;
 var modify;
@@ -12,6 +11,10 @@ map.addInteraction(select);
 
 
 function startDrawing(){
+  drawingMode = true;
+  map.removeInteraction(select);
+  select.getFeatures().clear();
+  
   drawing = new ol.interaction.Draw({
     features: featureOverlay.getFeatures(),
     type: $("#drawingTool input[type='radio']:checked").val()
@@ -48,8 +51,10 @@ function startDrawing(){
 }
 
 function stopDrawing(){
+  drawingMode = false;
   map.removeInteraction(drawing);
   map.removeInteraction(modify);
+  map.addInteraction(select);
 }
 
 function formatLength(feature) {
@@ -81,7 +86,6 @@ $("#drawingTool input[type='radio']").click(function(){
 
 $("#drawingDelete").click(function(){
   map.removeInteraction(drawing);
-  //featureOverlay.getFeatures().clear();
   removeSelected();
 });
 
@@ -93,7 +97,7 @@ function removeSelected(){
 }
 
 $(document).on('keyup',function(evt){
-  if(evt.keyCode == 27){ // ESC
+  if(evt.keyCode == 27){ // Esc
     stopDrawing();
     select.getFeatures().clear();
   }
@@ -112,36 +116,41 @@ select.getFeatures().on('remove',function(){
 });
 
 function printSelected(){
-  //console.log(select.getFeatures().getLength());
   $("#features table").empty();
-  select.getFeatures().forEach(function(feature){
-    
-    //console.log(feature.getGeometry().getType());
-    
-    var type = $("#drawingTool input[type='radio']:checked").val();
-    featureElement = document.createElement('tr');
-    var titleTdElement = document.createElement('td');
-    titleTdElement.className = "titleTd";
-    switch(feature.getGeometry().getType()){
-      case "LineString": titleTdElement.innerHTML = "Trasa"; break;
-      case "Polygon": titleTdElement.innerHTML = "Polygon"; break;
-      case "Point": titleTdElement.innerHTML = "Bod"; break;
-      default: titleTdElement.innerHTML = "?"; break;
-    }
-    var valueTdElement = document.createElement('td');
-    valueTdElement.className = "valueTd";
-    
-    switch(feature.getGeometry().getType()){
-      case "LineString": valueTdElement.innerHTML = formatLength(feature.getGeometry()); break;
-      case "Polygon": valueTdElement.innerHTML = formatArea(feature.getGeometry()); break;
-      case "Point": valueTdElement.innerHTML = ""; break;
-      default: valueTdElement.innerHTML = "?"; break;
-    }
-    
-    featureElement.appendChild(titleTdElement);
-    featureElement.appendChild(valueTdElement);
-    $("#features table").append(featureElement);
-  });
-  $(".menuaccordion").accordion("refresh");
+  if(!drawingMode){
+    select.getFeatures().forEach(function(feature){
+      var type = $("#drawingTool input[type='radio']:checked").val();
+      featureElement = document.createElement('tr');
+      var titleTdElement = document.createElement('td');
+      titleTdElement.className = "titleTd";
+      switch(feature.getGeometry().getType()){
+        case "LineString": titleTdElement.innerHTML = "Lom. úsečka"; break;
+        case "Polygon": titleTdElement.innerHTML = "Polygon"; break;
+        case "Point": titleTdElement.innerHTML = "Bod"; break;
+        default: titleTdElement.innerHTML = feature.getGeometry().getType(); break;
+      }
+      var valueTdElement = document.createElement('td');
+      valueTdElement.className = "valueTd";
+      
+      switch(feature.getGeometry().getType()){
+        case "LineString": valueTdElement.innerHTML = formatLength(feature.getGeometry()); break;
+        case "Polygon": valueTdElement.innerHTML = formatArea(feature.getGeometry()); break;
+        default: valueTdElement.innerHTML = ""; break;
+      }
+      
+      featureElement.appendChild(titleTdElement);
+      featureElement.appendChild(valueTdElement);
+      $("#features table").append(featureElement);
+    });
+  }
+  /*
+  console.log(select.getFeatures().length);
+  if(select.getFeatures().length != undefined && select.getFeatures().length > 0){
+    $("#featuresAccordion").show();
+  }else{
+    $("#featuresAccordion").hide();
+  }
+  */
+  $(".menuaccordion, .menuaccordionOpened").accordion("refresh");
 }
 

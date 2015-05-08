@@ -17,7 +17,7 @@ html, body {
 }
 
 #menu div {
-  overflow: visible;
+  /*overflow: visible;*/
 }
 
 #map {
@@ -84,5 +84,16 @@ html, body {
 #export button, #export input {
   width: 100%;
   margin: 2px;
+}
+
+#properties table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#properties table td, #properties table th {
+  /*border: 1px solid #AAA;*/
+  padding: 2px 4px;
+  text-align: center;
 }
 

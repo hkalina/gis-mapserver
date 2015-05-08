@@ -22,7 +22,7 @@ var wmtsTileGridCuzk = new ol.tilegrid.WMTS({
   matrixIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 });
 
-// z getCapabalities generovanych Mapcache
+// z getCapabalities generovanych nasi Mapcache
 // http://app.hustopece-city.cz/mapcache/wmts/1.0.0/WMTSCapabilities.xml
 var wmtsTileGridHust = new ol.tilegrid.WMTS({  
   origins: [
@@ -69,38 +69,10 @@ var view = new ol.View({
   zoom: 6
 });
 
-var iconFeatures=[];
-
-iconFeatures.push(new ol.Feature({
-  geometry: new ol.geom.Point([-591776.4, -1189977.6]),
-  name: 'Kostel'
-}));
-
-iconFeatures.push(new ol.Feature({
-  geometry: new ol.geom.Point(ol.proj.transform([16.7161864, 48.9391936], 'EPSG:4326', 'EPSG:5514')), // WGS84 -> JTSK
-  name: 'Vodojem'
-}));
-
 var layers = [
   {
     group: "ČÚZK",
     items: [
-      
-      {
-        name: "Fotomapa",
-        layer: new ol.layer.Tile({
-          visible: false,
-          source: new ol.source.WMTS({
-            url: 'http://geoportal-orto.cuzk.cz/WMTS_ORTOFOTO/service.svc/get?',
-            layer: 'orto',
-            style: 'default',
-            matrixSet: 'jtsk:epsg:5514',
-            projection: projectionCuzk,
-            format: 'image/jpg',
-            tileGrid: wmtsTileGridCuzk
-          })
-        })
-      },
       
       {
         name: "Základní mapa",
@@ -118,17 +90,101 @@ var layers = [
         })
       },
       
+      {
+        name: "Ortofotomapa",
+        layer: new ol.layer.Tile({
+          visible: false,
+          source: new ol.source.WMTS({
+            url: 'http://geoportal-orto.cuzk.cz/WMTS_ORTOFOTO/service.svc/get?',
+            layer: 'orto',
+            style: 'default',
+            matrixSet: 'jtsk:epsg:5514',
+            projection: projectionCuzk,
+            format: 'image/jpg',
+            tileGrid: wmtsTileGridCuzk
+          })
+        })
+      }
+      
+    ]
+  },
+
+  {
+    group: "ČÚZK: Kat. nemovitostí",
+    items: [
+      
+      {
+        name: "Hranice parcel",
+        layer: new ol.layer.Image({
+          visible: false,
+          opacity: 0.9,
+          source: new ol.source.ImageWMS({
+            url: 'http://services.cuzk.cz/wms/wms.asp',
+            params: {
+              'LAYERS': 'hranice_parcel'
+            },
+            projection: projectionCuzk
+          })
+        })
+      },
+      
+      {
+        name: "Parcelní čísla",
+        layer: new ol.layer.Image({
+          visible: false,
+          opacity: 0.9,
+          source: new ol.source.ImageWMS({
+            url: 'http://services.cuzk.cz/wms/wms.asp',
+            params: {
+              'LAYERS': 'parcelni_cisla'
+            },
+            projection: projectionCuzk
+          })
+        })
+      },
+      
+      {
+        name: "Obrazy parcel",
+        layer: new ol.layer.Image({
+          visible: false,
+          opacity: 0.9,
+          source: new ol.source.ImageWMS({
+            url: 'http://services.cuzk.cz/wms/wms.asp',
+            params: {
+              'LAYERS': 'obrazy_parcel'
+            },
+            projection: projectionCuzk
+          })
+        })
+      },
+      
+      {
+        name: "Další prvky",
+        layer: new ol.layer.Image({
+          visible: false,
+          opacity: 0.9,
+          source: new ol.source.ImageWMS({
+            url: 'http://services.cuzk.cz/wms/wms.asp',
+            params: {
+              'LAYERS': 'dalsi_p_mapy'
+            },
+            projection: projectionCuzk
+          })
+        })
+      },
+      
     ]
   },
   
   {
-    group: "WMTS Hustopeče",
+    group: "Test WMTS Hustopeče",
     items: [
       
       {
         name: "Hustopečsko",
         layer: new ol.layer.Tile({
           visible: false,
+          opacity: 0.6,
           source: new ol.source.WMTS({
             url: 'http://app.hustopece-city.cz/mapcache/wmts?',
             layer: 'Hustopecsko',
@@ -145,6 +201,7 @@ var layers = [
         name: "Brumovice",
         layer: new ol.layer.Tile({
           visible: false,
+          opacity: 0.9,
           source: new ol.source.WMTS({
             url: 'http://app.hustopece-city.cz/mapcache/wmts?',
             layer: 'Brumovice',
@@ -161,14 +218,14 @@ var layers = [
   },
 
   {
-    group: "WMS Hustopeče",
+    group: "Test WMS Hustopeče",
     items: [
       
       {
         name: "Hustopečsko",
         layer: new ol.layer.Image({
           visible: false,
-          opacity: 0.9,
+          opacity: 0.6,
           source: new ol.source.ImageWMS({
             url: 'http://app.hustopece-city.cz/mapcache/',
             params: {
@@ -184,6 +241,7 @@ var layers = [
         name: "Brumovice",
         layer: new ol.layer.Image({
           visible: false,
+          opacity: 0.9,
           source: new ol.source.ImageWMS({
             url: 'http://app.hustopece-city.cz/mapcache/',
             params: {
@@ -195,31 +253,7 @@ var layers = [
       },
       
     ]
-  },
-
-  {
-    group: "Testovací",
-    items: [
-      
-      {
-        name: "Kostel a vodojem",
-        layer: new ol.layer.Vector({
-          source: new ol.source.Vector({
-            features: iconFeatures
-          }),
-          style: new ol.style.Style({
-            image: new ol.style.Icon({
-              anchor: [0.5, 1.0],
-              anchorXUnits: 'fraction',
-              anchorYUnits: 'fraction',
-              opacity: 0.7,
-              src: 'icons/sunny.png'
-            })
-          })
-        })
-      }
-      
-    ]
   }
+
 ];
 

@@ -1,23 +1,80 @@
 
 $(function(){
-  $(".menuaccordion").accordion({
+  $(".menuaccordionOpened").accordion({
     collapsible: true,
     animate: 150
   });
+  $(".menuaccordion").accordion({
+    collapsible: true,
+    animate: 150,
+    active: false
+  });
+  printSelected();
 });
 
 var map = new ol.Map({
   controls: ol.control.defaults({}),
+  interactions : ol.interaction.defaults({doubleClickZoom: false}),
   target: 'map',
   view: view
 });
 
-$(map.getViewport()).on("click", function(e){
-    map.forEachFeatureAtPixel(map.getEventPixel(e), function (feature, layer) {
-        //console.log(feature);
-        //console.log(layer);
-    });
+$(map.getViewport()).on("dblclick", function(e){
+  var blank = true;
+  var coords = map.getEventPixel(e);
+  var jtsk = map.getEventCoordinate(e);
+  $("#properties table").empty();
+  tablePrintHead("#properties table","Kliknuto");
+  tablePrintBody("#properties table","",jtsk);
+  map.forEachFeatureAtPixel(coords, function(feature, layer){
+    blank = true;
+    console.log(feature);
+    
+    switch(feature.getGeometry().getType()){
+      case "LineString": tablePrintHead("#properties table","Lomená úsečka"); break;
+      case "Polygon": tablePrintHead("#properties table","Polygon"); break;
+      case "Point": tablePrintHead("#properties table","Bod"); break;
+      default: titleTdElement.innerHTML = feature.getGeometry().getType(); break;
+    }
+    
+    var coords = feature.getGeometry().getCoordinates()[0];
+    for(i=0; i < coords.length; i++){
+      if(feature.getGeometry().getType() != "Polygon" || i != coords.length-1){
+        tablePrintBody("#properties table","",coords[i]);
+      }
+    }
+  });
+  $("#properties").dialog("open");
 });
+
+function tablePrintHead(table,name){
+  var tr = document.createElement('tr');
+  var th1 = document.createElement('th');
+  var th2 = document.createElement('th');
+  var th3 = document.createElement('th');
+  $(th1).text(name);
+  $(th2).text("S-JTSK");
+  $(th3).text("WGS 84");
+  $(tr).append(th1);
+  $(tr).append(th2);
+  $(tr).append(th3);
+  $(table).append(tr);
+}
+
+function tablePrintBody(table,name,jtsk){
+  var tr = document.createElement('tr');
+  var td1 = document.createElement('td');
+  var td2 = document.createElement('td');
+  var td3 = document.createElement('td');
+  $(td1).text(name);
+  $(td2).text(jtsk[0]+" "+jtsk[1]);
+  var wgs84 = ol.proj.transform(jtsk, 'EPSG:5514', 'EPSG:4326');
+  $(td3).text(wgs84[0]+" "+wgs84[1]);
+  $(tr).append(td1);
+  $(tr).append(td2);
+  $(tr).append(td3);
+  $(table).append(tr);
+}
 
 function printLayers(){
  $("#layers").empty();
@@ -122,17 +179,17 @@ $("#export-link").click(function(){
   });
   
   $.post("save.php", { exported: exported }, function(data){
-    window.location.hash = '#' + data;
-    $("#export-url").val(window.location.href);
+    $("#export-url").val(location.protocol+'//'+location.host+location.pathname+'#'+data);
   });
 });
 
 
 $(function(){ // loading of KML from URL
+  if(!window.location.hash) return;
   var vector = new ol.layer.Vector({
     source: new ol.source.KML({
       projection: 'EPSG:5514',
-      url: decodeURIComponent(window.location.hash.substring(1))
+      url: window.location.hash.substring(1)
     })
   });
   var wasLoaded = false;
@@ -148,10 +205,8 @@ $(function(){ // loading of KML from URL
   });
 });
 
-
 /*
 map.on('singleclick', function(evt) {
-  alert("click");
   
   var wmsSource = new ol.source.ImageWMS({
             url: 'http://app.hustopece-city.cz/mapcache/',
