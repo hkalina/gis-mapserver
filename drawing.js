@@ -7,6 +7,9 @@ featureOverlay.setMap(map);
 
 var drawing;
 var modify;
+var select = new ol.interaction.Select();
+map.addInteraction(select);
+
 
 function startDrawing(){
   drawing = new ol.interaction.Draw({
@@ -41,47 +44,12 @@ function startDrawing(){
         })
       })
     }));
-    printDrawed();
   }, this);
 }
 
 function stopDrawing(){
   map.removeInteraction(drawing);
   map.removeInteraction(modify);
-}
-
-function printDrawed(){
-  console.log(featureOverlay.getFeatures().getLength());
-  $("#features table").empty();
-  featureOverlay.getFeatures().forEach(function(feature){
-    
-    console.log(feature.getGeometry().getType());
-    
-    var type = $("#drawingTool input[type='radio']:checked").val();
-    featureElement = document.createElement('tr');
-    var titleTdElement = document.createElement('td');
-    titleTdElement.className = "titleTd";
-    switch(feature.getGeometry().getType()){
-      case "LineString": titleTdElement.innerHTML = "Trasa"; break;
-      case "Polygon": titleTdElement.innerHTML = "Polygon"; break;
-      case "Point": titleTdElement.innerHTML = "Bod"; break;
-      default: titleTdElement.innerHTML = "?"; break;
-    }
-    var valueTdElement = document.createElement('td');
-    valueTdElement.className = "valueTd";
-    
-    switch(feature.getGeometry().getType()){
-      case "LineString": valueTdElement.innerHTML = formatLength(feature.getGeometry()); break;
-      case "Polygon": valueTdElement.innerHTML = formatArea(feature.getGeometry()); break;
-      case "Point": valueTdElement.innerHTML = ""; break;
-      default: valueTdElement.innerHTML = "?"; break;
-    }
-    
-    featureElement.appendChild(titleTdElement);
-    featureElement.appendChild(valueTdElement);
-    $("#features table").append(featureElement);
-  });
-  $(".menuaccordion").accordion("refresh");
 }
 
 function formatLength(feature) {
@@ -121,4 +89,46 @@ $(document).on('keyup',function(evt){
     stopDrawing();
   }
 });
+
+select.getFeatures().on('add',function(){
+  printSelected();
+});
+
+select.getFeatures().on('remove',function(){
+  printSelected();
+});
+
+function printSelected(){
+  console.log(select.getFeatures().getLength());
+  $("#features table").empty();
+  select.getFeatures().forEach(function(feature){
+    
+    console.log(feature.getGeometry().getType());
+    
+    var type = $("#drawingTool input[type='radio']:checked").val();
+    featureElement = document.createElement('tr');
+    var titleTdElement = document.createElement('td');
+    titleTdElement.className = "titleTd";
+    switch(feature.getGeometry().getType()){
+      case "LineString": titleTdElement.innerHTML = "Trasa"; break;
+      case "Polygon": titleTdElement.innerHTML = "Polygon"; break;
+      case "Point": titleTdElement.innerHTML = "Bod"; break;
+      default: titleTdElement.innerHTML = "?"; break;
+    }
+    var valueTdElement = document.createElement('td');
+    valueTdElement.className = "valueTd";
+    
+    switch(feature.getGeometry().getType()){
+      case "LineString": valueTdElement.innerHTML = formatLength(feature.getGeometry()); break;
+      case "Polygon": valueTdElement.innerHTML = formatArea(feature.getGeometry()); break;
+      case "Point": valueTdElement.innerHTML = ""; break;
+      default: valueTdElement.innerHTML = "?"; break;
+    }
+    
+    featureElement.appendChild(titleTdElement);
+    featureElement.appendChild(valueTdElement);
+    $("#features table").append(featureElement);
+  });
+  $(".menuaccordion").accordion("refresh");
+}
 

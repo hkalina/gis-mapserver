@@ -99,9 +99,6 @@ $("#export-kml").click(function(){
   window.location.href = 'data:application/vnd.google-earth.kml+xml;base64,' + btoa(exported);
 });
 
-var selectInteraction = new ol.interaction.Select();
-map.addInteraction(selectInteraction);
-
 
 // export into KML, save to server and get URL
 $("#export-link").click(function(){
