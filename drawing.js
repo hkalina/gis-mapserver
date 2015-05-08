@@ -81,12 +81,24 @@ $("#drawingTool input[type='radio']").click(function(){
 
 $("#drawingDelete").click(function(){
   map.removeInteraction(drawing);
-  featureOverlay.getFeatures().clear();
+  //featureOverlay.getFeatures().clear();
+  removeSelected();
 });
+
+function removeSelected(){
+  select.getFeatures().forEach(function(feature){
+    featureOverlay.removeFeature(feature);
+    select.getFeatures().remove(feature);
+  });
+}
 
 $(document).on('keyup',function(evt){
   if(evt.keyCode == 27){ // ESC
     stopDrawing();
+  }
+  if(evt.keyCode == 46){ // Delete
+    stopDrawing();
+    removeSelected();
   }
 });
 
