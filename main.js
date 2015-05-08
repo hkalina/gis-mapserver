@@ -14,8 +14,8 @@ var map = new ol.Map({
 
 $(map.getViewport()).on("click", function(e){
     map.forEachFeatureAtPixel(map.getEventPixel(e), function (feature, layer) {
-        console.log(feature);
-        console.log(layer);
+        //console.log(feature);
+        //console.log(layer);
     });
 });
 

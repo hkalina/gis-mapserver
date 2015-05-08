@@ -220,11 +220,6 @@ var layers = [
       }
       
     ]
-  },
-
-  {
-    group: "Vlastní vrstvy",
-    items: []
   }
 ];
 

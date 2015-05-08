@@ -95,6 +95,7 @@ function removeSelected(){
 $(document).on('keyup',function(evt){
   if(evt.keyCode == 27){ // ESC
     stopDrawing();
+    select.getFeatures().clear();
   }
   if(evt.keyCode == 46){ // Delete
     stopDrawing();
@@ -111,11 +112,11 @@ select.getFeatures().on('remove',function(){
 });
 
 function printSelected(){
-  console.log(select.getFeatures().getLength());
+  //console.log(select.getFeatures().getLength());
   $("#features table").empty();
   select.getFeatures().forEach(function(feature){
     
-    console.log(feature.getGeometry().getType());
+    //console.log(feature.getGeometry().getType());
     
     var type = $("#drawingTool input[type='radio']:checked").val();
     featureElement = document.createElement('tr');
