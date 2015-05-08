@@ -2,7 +2,7 @@
 $(function(){
   $(".menuaccordion").accordion({
     collapsible: true,
-    animate: 200
+    animate: 150
   });
 });
 
@@ -70,6 +70,7 @@ function printLayers(){
 }
 printLayers();
 
+
 // dragging files into map window
 var dragAndDropInteraction = new ol.interaction.DragAndDrop({
   formatConstructors: [
@@ -81,16 +82,12 @@ var dragAndDropInteraction = new ol.interaction.DragAndDrop({
   ]
 });
 dragAndDropInteraction.on('addfeatures', function(event){
-  map.getLayers().push(new ol.layer.Image({
-    source: new ol.source.ImageVector({
-      source: new ol.source.Vector({
-        features: event.features,
-        projection: event.projection
-      })
-    })
-  }));
+  $.each(event.features, function(index,feature){
+    featureOverlay.getFeatures().push(feature);
+  });
 });
 map.addInteraction(dragAndDropInteraction);
+
 
 // export into KML
 $("#export-kml").click(function(){
@@ -105,28 +102,6 @@ $("#export-kml").click(function(){
 var selectInteraction = new ol.interaction.Select();
 map.addInteraction(selectInteraction);
 
-/*
-function saveHash(){ // save encoded GeoJSON into URL
-  var geoJSON = new ol.format.GeoJSON;
-  var exported = {
-    features: geoJSON.writeFeatures(featureOverlay.getFeatures().getArray())
-  };
-  window.location.hash = '#' + encodeURIComponent(JSON.stringify(exported));
-  $("#export-url").val(window.location.href);
-}
-
-$(function(){ // load URL encoded GeoJSON
-  if(window.location.hash.length <= 1) return;
-  var geoJSON = new ol.format.GeoJSON;
-  var exported = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
-  
-  featureOverlay.getFeatures().clear();
-  $.each(geoJSON.readFeatures(exported.features), function(index, feature){
-    console.log(feature);
-    featureOverlay.getFeatures().push(feature);
-  });
-});
-*/
 
 // export into KML, save to server and get URL
 $("#export-link").click(function(){

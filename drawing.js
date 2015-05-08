@@ -2,25 +2,26 @@
 // http://openlayers.org/en/v3.1.0/examples/measure.html
 // http://openlayers.org/en/v3.1.0/examples/draw-and-modify-features.html
 
-var drawing; // interaction
-
 var featureOverlay = new ol.FeatureOverlay({});
 featureOverlay.setMap(map);
 
-var modify = new ol.interaction.Modify({
-  features: featureOverlay.getFeatures(),
-  deleteCondition: function(event) {
-    return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
-  }
-});
-map.addInteraction(modify);
+var drawing;
+var modify;
 
 function startDrawing(){
   drawing = new ol.interaction.Draw({
     features: featureOverlay.getFeatures(),
     type: $("#drawingTool input[type='radio']:checked").val()
-  });
+  })
   map.addInteraction(drawing);
+  
+  modify = new ol.interaction.Modify({
+    features: featureOverlay.getFeatures(),
+    deleteCondition: function(event) {
+      return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+    }
+  });
+  map.addInteraction(modify);
   
   drawing.on('drawend', function(evt){
     var opacitedColor = ol.color.asArray($("#backgroundColorPicker").data("plugin_tinycolorpicker").colorHex).slice();
@@ -42,14 +43,11 @@ function startDrawing(){
     }));
     printDrawed();
   }, this);
-  
-  //$(map.getViewport()).on('mousemove', function(evt){
-  //  printDrawed();
-  //});
 }
 
 function stopDrawing(){
   map.removeInteraction(drawing);
+  map.removeInteraction(modify);
 }
 
 function printDrawed(){
@@ -120,7 +118,7 @@ $("#drawingDelete").click(function(){
 
 $(document).on('keyup',function(evt){
   if(evt.keyCode == 27){ // ESC
-    map.removeInteraction(drawing);
+    stopDrawing();
   }
 });
 
