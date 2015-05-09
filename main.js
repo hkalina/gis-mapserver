@@ -24,37 +24,47 @@ $(map.getViewport()).on("dblclick", function(e){
   var coords = map.getEventPixel(e);
   var jtsk = map.getEventCoordinate(e);
   $("#properties table").empty();
-  tablePrintHead("#properties table","Kliknuto");
+  tablePrintHead("#properties table","Kliknuto","S-JTSK","WGS 84");
   tablePrintBody("#properties table","",jtsk);
+  
   map.forEachFeatureAtPixel(coords, function(feature, layer){
     blank = true;
-    console.log(feature);
-    
+    var coords = null;
     switch(feature.getGeometry().getType()){
-      case "LineString": tablePrintHead("#properties table","Lomená úsečka"); break;
-      case "Polygon": tablePrintHead("#properties table","Polygon"); break;
-      case "Point": tablePrintHead("#properties table","Bod"); break;
-      default: titleTdElement.innerHTML = feature.getGeometry().getType(); break;
+      case "LineString":
+        tablePrintHead("#properties table","Lomená úsečka","Délka: "+feature.getGeometry().getLength()+" m","");
+        coords = feature.getGeometry().getCoordinates();
+        break;
+      case "Polygon":
+        var rings = feature.getGeometry().getCoordinates();
+        var perimeter = new ol.geom.LineString(rings[0],"XYZ");
+        tablePrintHead("#properties table","Polygon","Obvod: "+perimeter.getLength()+" m","Obsah: "+feature.getGeometry().getArea()+" m<sup>2</sup>");
+        coords = feature.getGeometry().getCoordinates()[0];
+        coords.pop(); // remove last (same as first)
+        break;
+      case "Point":
+        tablePrintHead("#properties table","Bod","","");
+        coords = [feature.getGeometry().getCoordinates()];
+        break;
+      default:
+        titleTdElement.innerHTML = feature.getGeometry().getType();
+        break;
     }
-    
-    var coords = feature.getGeometry().getCoordinates()[0];
     for(i=0; i < coords.length; i++){
-      if(feature.getGeometry().getType() != "Polygon" || i != coords.length-1){
-        tablePrintBody("#properties table","",coords[i]);
-      }
+      tablePrintBody("#properties table","",coords[i]);
     }
   });
   $("#properties").dialog("open");
 });
 
-function tablePrintHead(table,name){
+function tablePrintHead(table,head1,head2,head3){
   var tr = document.createElement('tr');
   var th1 = document.createElement('th');
   var th2 = document.createElement('th');
   var th3 = document.createElement('th');
-  $(th1).text(name);
-  $(th2).text("S-JTSK");
-  $(th3).text("WGS 84");
+  $(th1).html(head1);
+  $(th2).html(head2);
+  $(th3).html(head3);
   $(tr).append(th1);
   $(tr).append(th2);
   $(tr).append(th3);
@@ -69,7 +79,7 @@ function tablePrintBody(table,name,jtsk){
   $(td1).text(name);
   $(td2).text(jtsk[0]+" "+jtsk[1]);
   var wgs84 = ol.proj.transform(jtsk, 'EPSG:5514', 'EPSG:4326');
-  $(td3).text(wgs84[0]+" "+wgs84[1]);
+  $(td3).text(wgs84[1]+" "+wgs84[0]);
   $(tr).append(td1);
   $(tr).append(td2);
   $(tr).append(td3);
