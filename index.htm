@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <title>GISová aplikace</title>
-    <link rel="stylesheet" href="theme.css" type="text/css" media="handheld,projection,screen" />
+    <link rel="stylesheet" href="theme.css" type="text/css" media="all" />
     <link rel="stylesheet" href="tinycolorpicker.css" type="text/css" />
     <link rel="stylesheet" href="print.css" type="text/css" media="print" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/ol3/3.4.0/ol.css" type="text/css" />
@@ -55,6 +55,9 @@
 Průhlednost
 <div id="visibilitySlider"></div>
 
+Tloušťka čáry
+<div id="widthSlider"></div>
+
 <script>
 $("#drawingTool").buttonset();
 $("#drawingLineString").button({icons: {primary: "ui-icon-arrowthick-2-e-w"}, text: false});
@@ -71,6 +74,13 @@ $("#visibilitySlider").slider({
   min: 0,
   max: 100,
   value: 50
+});
+$("#widthSlider").slider({
+  orientation: "horizontal",
+  range: "min",
+  min: 1,
+  max: 8,
+  value: 2
 });
 </script>
 </div><!--drawing-->
@@ -116,7 +126,7 @@ $("#export button").button();
 <script>
 $("#properties").dialog({
   autoOpen: false,
-  title: "Vlastnosti",
+  title: "Informace o objektech ve zvoleném umístění",
   width: 850
 });
 </script>

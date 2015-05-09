@@ -4,6 +4,34 @@
 }
 
 #map {
-  width: 100%;
+  width: 99%;
   height: auto;
 }
+
+.ui-dialog {
+  top: 0px !important;
+  left: 0px !important;
+  width: 80% !important;
+  position: static !important;
+  width: 98% !important;
+  border: none !important;
+  font-size: 0.8em !important;
+  margin-top: 20px !important;
+}
+
+.ui-widget-header {
+  border: 1px solid #AAA !important;
+}
+
+button {
+  display: none !important;
+}
+
+.ol-scale-line-inner {
+  border-color: #000000 !important;
+}
+
+.ui-resizable-handle {
+  display: none !important;
+}
+

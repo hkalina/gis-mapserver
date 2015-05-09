@@ -3,7 +3,7 @@ html, body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
   font-size:14px;
   background-color: #CCC;
 }
@@ -77,8 +77,9 @@ html, body {
   display: inline; /* support: IE7 */
 }
 
-#visibilitySlider {
+#visibilitySlider, #widthSlider {
   margin-top: 3px;
+  margin-bottom: 7px;
 }
 
 #export button, #export input {

@@ -38,10 +38,10 @@ function startDrawing(){
       }),
       stroke: new ol.style.Stroke({
         color: $("#colorPicker").data("plugin_tinycolorpicker").colorHex,
-        width: 2
+        width: $("#widthSlider").slider("value")
       }),
       image: new ol.style.Circle({
-        radius: 7,
+        radius: $("#widthSlider").slider("value")*2,
         fill: new ol.style.Fill({
           color: $("#colorPicker").data("plugin_tinycolorpicker").colorHex
         })
