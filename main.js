@@ -32,13 +32,13 @@ $(map.getViewport()).on("dblclick", function(e){
     var coords = null;
     switch(feature.getGeometry().getType()){
       case "LineString":
-        tablePrintHead("#properties table","Lomená úsečka","Délka: "+feature.getGeometry().getLength()+" m","");
+        tablePrintHead("#properties table","Lomená úsečka","Délka: "+(Math.round(feature.getGeometry().getLength()*100)/100)+" m","");
         coords = feature.getGeometry().getCoordinates();
         break;
       case "Polygon":
         var rings = feature.getGeometry().getCoordinates();
         var perimeter = new ol.geom.LineString(rings[0],"XYZ");
-        tablePrintHead("#properties table","Polygon","Obvod: "+perimeter.getLength()+" m","Obsah: "+feature.getGeometry().getArea()+" m<sup>2</sup>");
+        tablePrintHead("#properties table","Polygon","Obvod: "+(Math.round(perimeter.getLength()*100)/100)+" m","Obsah: "+(Math.round(feature.getGeometry().getArea()*100)/100)+" m<sup>2</sup>");
         coords = feature.getGeometry().getCoordinates()[0];
         coords.pop(); // remove last (same as first)
         break;
