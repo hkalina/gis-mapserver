@@ -23,15 +23,45 @@ var map = new ol.Map({
 });
 
 $(map.getViewport()).on("dblclick", function(e){
-  var blank = true;
   var coords = map.getEventPixel(e);
   var jtsk = map.getEventCoordinate(e);
   $("#properties table").empty();
-  tablePrintHead("#properties table","Kliknuto","S-JTSK","WGS 84");
+  tablePrintHead("#properties table","Místo kliknutí","S-JTSK","WGS 84");
   tablePrintBody("#properties table","",jtsk);
   
   map.forEachFeatureAtPixel(coords, function(feature, layer){
-    blank = true;
+    var coords = null;
+    switch(feature.getGeometry().getType()){
+      case "LineString":
+        tablePrintHead("#properties table","Lomená úsečka","Délka: "+(Math.round(feature.getGeometry().getLength()*100)/100)+" m","");
+        coords = feature.getGeometry().getCoordinates();
+        break;
+      case "Polygon":
+        var rings = feature.getGeometry().getCoordinates();
+        var perimeter = new ol.geom.LineString(rings[0],"XYZ");
+        tablePrintHead("#properties table","Polygon","Obvod: "+(Math.round(perimeter.getLength()*100)/100)+" m","Obsah: "+(Math.round(feature.getGeometry().getArea()*100)/100)+" m<sup>2</sup>");
+        coords = feature.getGeometry().getCoordinates()[0];
+        coords.pop(); // remove last (same as first)
+        break;
+      case "Point":
+        tablePrintHead("#properties table","Bod","","");
+        coords = [feature.getGeometry().getCoordinates()];
+        break;
+      default:
+        titleTdElement.innerHTML = feature.getGeometry().getType();
+        break;
+    }
+    for(i=0; i < coords.length; i++){
+      tablePrintBody("#properties table","",coords[i]);
+    }
+  });
+  $("#properties").dialog("open");
+});
+
+$("#features button").click(function(){
+  $("#properties table").empty();
+  
+  select.getFeatures().forEach(function(feature){
     var coords = null;
     switch(feature.getGeometry().getType()){
       case "LineString":

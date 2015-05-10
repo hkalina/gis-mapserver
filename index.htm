@@ -89,8 +89,9 @@ $("#widthSlider").slider({
 
 <div class="menuaccordionOpened" id="featuresAccordion">
 <h3>Vybrané objekty</h3>
-<div id="features"><table>
-</table>
+<div id="features">
+<table></table>
+<button onclick="selectedFeaturesDialog();">Podrobnosti</button>
 </div><!--features-->
 </div><!--menuaccordion-->
 
@@ -107,14 +108,16 @@ $("#widthSlider").slider({
 
 <input id="export-url" type="text" value="" readonly="readonly" />
 
-<script>
-$("#export button").button();
-</script>
+
 </div><!--export-->
 </div><!--menuaccordion-->
 
 
 </div><!--menu-->
+
+<script>
+$("#menu button").button();
+</script>
 
 <div id="map"></div>
 
@@ -126,7 +129,7 @@ $("#export button").button();
 <script>
 $("#properties").dialog({
   autoOpen: false,
-  title: "Informace o objektech ve zvoleném umístění",
+  title: "Informace o zvolených objektech",
   width: 850
 });
 </script>

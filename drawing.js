@@ -18,17 +18,7 @@ function startDrawing(){
   drawing = new ol.interaction.Draw({
     features: featureOverlay.getFeatures(),
     type: $("#drawingTool input[type='radio']:checked").val()
-  })
-  map.addInteraction(drawing);
-  
-  modify = new ol.interaction.Modify({
-    features: featureOverlay.getFeatures(),
-    deleteCondition: function(event) {
-      return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
-    }
   });
-  map.addInteraction(modify);
-  
   drawing.on('drawend', function(evt){
     var opacitedColor = ol.color.asArray($("#backgroundColorPicker").data("plugin_tinycolorpicker").colorHex).slice();
     opacitedColor[3] = $("#visibilitySlider").slider("value")/100.0;
@@ -48,6 +38,15 @@ function startDrawing(){
       })
     }));
   }, this);
+  map.addInteraction(drawing);
+  
+  modify = new ol.interaction.Modify({
+    features: featureOverlay.getFeatures(),
+    deleteCondition: function(event) {
+      return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+    }
+  });
+  map.addInteraction(modify);
 }
 
 function stopDrawing(){

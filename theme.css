@@ -98,3 +98,7 @@ html, body {
   text-align: center;
 }
 
+#features table {
+  margin-bottom: 12px;
+}
+
