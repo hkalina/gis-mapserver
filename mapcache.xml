@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapcache>
+    <metadata>
+        <title>Hustopece - testing map service</title>
+        <abstract>Map layers of Hustopece, Czech republic</abstract>
+    </metadata>
+    
+    <cache name="diskcache" type="disk">
+        <base>/srv/mapserver/web/mapcache</base>
+        <symlink_blank/>
+    </cache>
+    
+    <format name="PNGQ_FAST" type="PNG">
+        <compression>fast</compression>
+        <colors>256</colors>
+    </format>
+    
+    <default_format>PNGQ_FAST</default_format>
+    
+    <grid name="epsg5514">
+        <srs>EPSG:5514</srs><!-- JTSK -->
+        <units>m</units>
+        <size>256 256</size>
+        <!-- podle geoportal.cuzk.cz -->
+        <extent>-904590 -1240000 -425000 -920000</extent>
+        <resolutions>2048.2559999999976 1024.1279999999988 512.0639999999994 256.0319999999997 128.01599999999985 64.00799999999992 32.00399999999996 16.00199999999998 8.00099999999999 4.000499999999995 2.0002499999999976 1.0001249999999988 0.5000624999999994 0.2500312499999997 0.12501562499999985</resolutions>
+    </grid>
+    
+    <source name="localHustopecsko" type="wms">
+        <getmap>
+            <params>
+                <FORMAT>image/png</FORMAT>
+                <LAYERS>Hustopecsko</LAYERS>
+            </params>
+        </getmap>
+        <http>
+            <url>http://app.hustopece-city.cz/mapserv?</url>
+        </http>
+    </source>
+    
+    <source name="localBrumovice" type="wms">
+        <getmap>
+            <params>
+                <FORMAT>image/png</FORMAT>
+                <LAYERS>Brumovice</LAYERS>
+            </params>
+        </getmap>
+        <http>
+            <url>http://app.hustopece-city.cz/mapserv?</url>
+        </http>
+    </source>
+        
+    <!-- tileset (skupina vrstev)
+        a tileset regroups a <source>, <grid> and <cache>.
+        the "name" parameter is mandatory, and represents the key by which this tileset
+        will be requested by clients (e.g. in the WMS LAYERS parameter)
+    -->
+    <tileset name="Hustopecsko">
+        <metadata>
+            <title>Hustopečsko</title>
+            <abstract>Hranice obcí mikroregionu Hustopečsko</abstract>
+        </metadata>
+        <source>localHustopecsko</source>
+        <cache>diskcache</cache>
+        <grid>epsg5514</grid>
+        <format>PNGQ_FAST</format>
+        <metatile>5 5</metatile>
+        <metabuffer>10</metabuffer>
+        <expires>3600</expires><!-- seconds, HTTP headers -->
+        <!--<auto_expire>86400</auto_expire>--><!-- seconds, when refresh from source -->
+    </tileset>
+    
+    <tileset name="Brumovice">
+        <metadata>
+            <title>Brumovice</title>
+            <abstract>Historická mapa Brumovic</abstract>
+        </metadata>
+        <source>localBrumovice</source>
+        <cache>diskcache</cache>
+        <grid>epsg5514</grid>
+        <format>PNGQ_FAST</format>
+        <metatile>5 5</metatile>
+        <metabuffer>10</metabuffer>
+        <expires>3600</expires><!-- seconds, HTTP headers -->
+        <!--<auto_expire>86400</auto_expire>--><!-- seconds, when refresh from source -->
+    </tileset>
+    
+    <!-- services
+        services that will be responded to by mod-mapcache
+        each service is accessible at the url http://host/path/to/mapcache/{service},
+        eg http://myhost/mapcache/wms for OGC WMS.
+    -->
+    <service type="wms" enabled="true"><!-- OGC WMS -->
+        <full_wms>assemble</full_wms>
+        <resample_mode>bilinear</resample_mode><!-- bilinear/nearest -->
+        <format>PNGQ_FAST</format><!-- for assembling -->
+        <maxsize>4096</maxsize>
+    </service>
+    <service type="wmts" enabled="true"/>
+    <!--
+    <service type="tms" enabled="true"/>
+    <service type="kml" enabled="true"/>
+    <service type="gmaps" enabled="true"/>
+    <service type="ve" enabled="true"/>
+    <service type="demo" enabled="true"/>
+    -->
+    
+    <!-- errors
+          configure how error will be reported back to a client:
+             - log : no error is reported back, except an http error code.
+             - report : return the error message to the client in textual format
+             - empty_img : return an empty image to the client. the actual error code is in the X-Mapcache-Error http header
+             - report_img : return an image with the error text included inside. not implemented yet.
+
+          the default setting is to report the error message back to the user. In production, you might want to set this to "log"
+          if you're paranoid, or to "empty_img" if you want to play nice with non-conforming clients.
+    -->
+    <errors>report</errors>
+    <lock_dir>/tmp</lock_dir>
+    <threaded_fetching>true</threaded_fetching>
+    
+    <!-- fastcgi only -->
+    <log_level>debug</log_level><!-- verbosity: debug/info/notice/warn/error -->
+    <auto_reload>true</auto_reload><!-- auto reload if config file changed -->
+</mapcache>
+

@@ -1,0 +1,100 @@
+MAP
+
+  #EXTENT 11.490 46.846 19.284 53.177  # WGS-84
+  #EXTENT 280659.109943 5322086.855897 785870.593444 5735441.706034  # UTM
+  #EXTENT 3275702.296651 5315185.596453 3791385.127849 5737107.912887  # S-42
+  EXTENT -933797.164560 -1274107.282123 -418114.333342 -852184.965672  # S-JTSK
+  
+  NAME "MapserverHustopece"
+  IMAGETYPE "png"
+  SIZE 800 600
+  STATUS ON
+  UNITS METERS
+
+  WEB
+    IMAGEPATH "/srv/mapserver/web/mapserver/" 
+    IMAGEURL "/gis/mapserver/"
+    METADATA
+      "ows_onlineresource" "http://app.hustopece-city.cz/mapserv?"
+      "ows_enable_request" "*"
+      "ows_srs"	"EPSG:5514"
+      "ows_title" "Hustopece"
+    END # METADATA
+  END # WEB
+
+  OUTPUTFORMAT
+    NAME "png"
+    MIMETYPE "image/png"
+    DRIVER "AGG/PNG"
+    EXTENSION "png"
+    IMAGEMODE RGBA
+    TRANSPARENT TRUE
+  END # OUTPUTFORMAT
+
+  PROJECTION # definice S-JTSK pouzivana na ORP Hustopece
+    "proj=krovak"
+    "lat_0=49.5"
+    "lon_0=24.83333333333333"
+    "alpha=30.28813972222222"
+    "k=0.9999"
+    "x_0=0"
+    "y_0=0"
+    "ellps=bessel"
+    "pm=greenwich"
+    "units=m"
+    "no_defs"
+    "towgs84=570.8,85.7,462.8,4.998,1.587,5.261,3.56"
+  END # PROJECTION
+
+  SCALEBAR
+    INTERVALS 4
+    LABEL
+      SIZE MEDIUM
+      OFFSET 0 0
+      SHADOWSIZE 1 1
+      TYPE BITMAP
+    END # LABEL
+    SIZE 200 3
+    STATUS OFF
+    UNITS MILES
+  END # SCALEBAR
+
+
+  LAYER
+    NAME "Hustopecsko"
+    DATA "layers/Hustopecsko.shp"
+    EXTENT -601835.749952823 -1198741.59 -576018.339827679 -1177683.53970397
+    METADATA
+      "ows_title" "Hustopecsko"
+    END # METADATA
+    OPACITY 70
+    STATUS ON
+    TILEITEM "location"
+    TYPE POLYGON
+    UNITS METERS
+    CLASS
+      STYLE
+        COLOR 220 209 84
+      END # STYLE
+      STYLE
+        OUTLINECOLOR 0 0 0
+        WIDTH 1
+      END # STYLE
+    END # CLASS
+  END # LAYER
+
+  LAYER
+    NAME "Brumovice"
+    DATA "layers/Brumovice.tif"
+    EXTENT -582291.15 -1189649.391477 -577129.938153 -1185264.49
+    METADATA
+      "ows_title" "Brumovice"
+    END # METADATA
+    OPACITY 70
+    STATUS ON
+    TILEITEM "location"
+    TYPE RASTER
+    UNITS METERS
+  END # LAYER
+
+END # MAP
